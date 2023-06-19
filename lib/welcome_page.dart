@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:monapplicationarosaje/social_page.dart';
 import 'package:monapplicationarosaje/delayed_animation.dart';
 import 'package:monapplicationarosaje/main.dart';
-import 'package:monapplicationarosaje/botuser.dart';
+import 'package:monapplicationarosaje/social_page.dart';
 
 
 class WelcomePage extends StatelessWidget {
@@ -58,7 +58,7 @@ class WelcomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignupPage(),
+                        builder: (context) => SocialPage(),
                       ),
                     );
                   },

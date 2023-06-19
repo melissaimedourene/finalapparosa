@@ -1,6 +1,5 @@
+import 'package:monapplicationarosaje/page1.dart';
 import 'package:flutter/material.dart';
-import 'package:monapplicationarosaje/login_page.dart';
-
 class SendMessagePage extends StatefulWidget {
   @override
   _SendMessagePageState createState() => _SendMessagePageState();
@@ -8,6 +7,7 @@ class SendMessagePage extends StatefulWidget {
 
 class _SendMessagePageState extends State<SendMessagePage> {
   final TextEditingController _messageController = TextEditingController();
+  List<Message> _messages = [];
 
   @override
   void dispose() {
@@ -16,9 +16,18 @@ class _SendMessagePageState extends State<SendMessagePage> {
   }
 
   void _sendMessage() {
-    String message = _messageController.text;
-    // Code pour envoyer le message ici
-    _messageController.clear();
+    String messageContent = _messageController.text;
+    if (messageContent.isNotEmpty) {
+      Message newMessage = Message(
+        senderName: 'You',
+        senderAvatar: 'https://example.com/your-avatar.jpg',
+        content: messageContent,
+      );
+      setState(() {
+        _messages.add(newMessage);
+        _messageController.clear();
+      });
+    }
   }
 
   @override
@@ -28,48 +37,72 @@ class _SendMessagePageState extends State<SendMessagePage> {
         title: Text('Envoyer un message'),
         backgroundColor: Colors.green,
       ),
-      body: Container(
-        color: Colors.green[100],
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 30.0,
-                    backgroundImage: AssetImage('assets/images/profile.png'),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              reverse: true,
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                final message = _messages[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(message.senderAvatar),
                   ),
-                  SizedBox(height: 16.0),
-                  TextField(
+                  title: Text(message.senderName),
+                  subtitle: Text(message.content),
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: 'Entrez votre message...',
-                      fillColor: Colors.white,
-                      filled: true,
                     ),
                   ),
-                ],
-              ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: _sendMessage,
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: _sendMessage,
-              child: Text('Envoyer'),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-                onPrimary: Colors.white,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text('Compte : John Doe', textAlign: TextAlign.center),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+class Message {
+  final String senderName;
+  final String senderAvatar;
+  final String content;
+
+  Message({
+    required this.senderName,
+    required this.senderAvatar,
+    required this.content,
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

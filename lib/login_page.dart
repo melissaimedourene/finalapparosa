@@ -2,38 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monapplicationarosaje/delayed_animation.dart';
 import 'package:monapplicationarosaje/main.dart';
-import'package:monapplicationarosaje/social_page.dart';
+import 'package:monapplicationarosaje/page1.dart';
+import 'package:monapplicationarosaje/social_page.dart';
 import 'package:monapplicationarosaje/Singin_page.dart';
-
-import 'package:monapplicationarosaje/main.dart';
 import 'package:monapplicationarosaje/message.dart';
-import'package:monapplicationarosaje/botaniste.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> _login(BuildContext context) async {
-    try {
-      UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      print('User ${userCredential.user!.uid} logged in');
+  void _login(BuildContext context) async {
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => BotanistPage(),
-        ),
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+    if (EmailValidator.validate(email)) {
+      try {
+        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => NavigationExample(),
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+        }
       }
+    } else {
+      print('Adresse e-mail invalide');
     }
   }
 
@@ -56,9 +60,7 @@ class LoginPage extends StatelessWidget {
           },
         ),
       ),
-      backgroundColor: Color(0xFF578C49),
-
-
+      backgroundColor: Color(0xFFFFFFFF),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -71,60 +73,64 @@ class LoginPage extends StatelessWidget {
             ),
             Column(
               children: [
-                // première colonne
                 Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: DelayedAnimation(
                     delay: 4500,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: d_green, // Couleur de fond de la colonne
-                        borderRadius: BorderRadius.circular(30), // Forme arrondie de la colonne
+                        color: d_green,
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       width: double.infinity,
                       child: TextFormField(
                         controller: emailController,
                         style: TextStyle(
-                          color: Colors.white, // Couleur du texte dans le champ de saisie
+                          color: Colors.white,
                         ),
                         decoration: const InputDecoration(
                           labelText: 'Email',
-                          labelStyle: TextStyle(color: Colors.white), // Couleur de l'étiquette
+                          labelStyle: TextStyle(color: Colors.white),
                           border: OutlineInputBorder(
-                            borderSide: BorderSide.none, // Enlève la bordure du champ de saisie
+                            borderSide: BorderSide.none,
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
                         onChanged: (value) {
-                          // Ici vous pouvez stocker la valeur saisie par l'utilisateur dans une variable.
+                          if (EmailValidator.validate(value.trim())) {
+                            // Adresse e-mail valide
+                          } else {
+                            print('Adresse e-mail invalide');
+                          }
                         },
                       ),
                     ),
                   ),
                 ),
-                // deuxième colonne
                 Container(
                   margin: EdgeInsets.only(bottom: 20),
                   child: DelayedAnimation(
                     delay: 4500,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: d_green, // Couleur de fond de la colonne
-                        borderRadius: BorderRadius.circular(30), // Forme arrondie de la colonne
+                        color: d_green,
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       width: double.infinity,
                       child: TextFormField(
                         controller: passwordController,
                         style: TextStyle(
-                          color: Colors.white, // Couleur du texte dans le champ de saisie
+                          color: Colors.white,
                         ),
                         decoration: const InputDecoration(
                           labelText: 'Mot de passe',
-                          labelStyle: TextStyle(color: Colors.white), // Couleur de l'étiquette
+                          labelStyle: TextStyle(color: Colors.white),
                           border: OutlineInputBorder(
-                            borderSide: BorderSide.none, // Enlève la bordure du champ de saisie
+                            borderSide: BorderSide.none,
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         ),
                         obscureText: true,
                         onChanged: (value) {
@@ -134,31 +140,29 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                // troisieme colonne
                 Container(
-                  // ajouter une marge en haut
                   margin: EdgeInsets.only(top: 30),
                   child: DelayedAnimation(
                     delay: 4500,
                     child: Container(
                       width: double.infinity,
                       child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: d_green,
-                              shape: StadiumBorder(),
-                              padding: EdgeInsets.all(26)),
-                          child: Text('Se connecter'),
-                          onPressed: () => _login(context)
+                        style: ElevatedButton.styleFrom(
+                          primary: d_green,
+                          shape: StadiumBorder(),
+                          padding: EdgeInsets.all(26),
+                        ),
+                        child: Text('Se connecter'),
+                        onPressed: () => _login(context),
                       ),
                     ),
                   ),
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Naviguer vers la page de connexion ici
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SinginPage ()),
+                      MaterialPageRoute(builder: (context) => SinginPage()),
                     );
                   },
                   child: DelayedAnimation(
@@ -169,7 +173,7 @@ class LoginPage extends StatelessWidget {
                         bottom: 20,
                       ),
                       child: Text(
-                        "Vous n'avez pas se compte ? S'inscrire",
+                        "Vous n'avez pas de compte ? S'inscrire",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           color: Colors.white,
@@ -179,16 +183,15 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
               ],
             ),
-
           ],
         ),
       ),
     );
   }
 }
+
 
 
 

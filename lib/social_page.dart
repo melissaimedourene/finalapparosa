@@ -23,7 +23,7 @@ class SocialPage extends StatelessWidget {
           },
         ),
       ),
-      backgroundColor: Color(0xFF578C49),
+      backgroundColor: Color(0xFFFFFFFF),
 
 
       body: SingleChildScrollView(
