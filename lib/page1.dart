@@ -99,18 +99,18 @@ class NavigationExample extends StatelessWidget {
               );
             },
           ),
-          IconButton(
-            icon: Icon(Icons.notification_add),
-            onPressed: () {
-              // Naviguer vers la page des notifications
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationsPage(),
-                ),
-              );
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.notification_add),
+          //   onPressed: () {
+          //     // Naviguer vers la page des notifications
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => NotificationsPage(),
+          //       ),
+          //     );
+          //   },
+          // ),
           IconButton(
             icon: Icon(Icons.map),
             onPressed: () {
@@ -136,7 +136,22 @@ class NavigationExample extends StatelessWidget {
                 'Je prends en photo ma plante',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: d_green, // Couleur verte personnalisée
+                    shape: StadiumBorder(),
+                    padding: EdgeInsets.all(26),
+                  ),
+                  onPressed: () {
+                    // Déconnexion de l'utilisateur
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => CameraPage()),
+                          (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: Text('Prendre en photo'),
+                ),
 
                 Text(
                   'Tableau de bord',
